@@ -1,10 +1,17 @@
 const { makeid } = require('./gen-id');
 const express = require('express');
+const QRCode = require('qrcode');
 const fs = require('fs');
 let router = express.Router();
 const pino = require("pino");
-const { default: makeWASocket, useMultiFileAuthState, delay, Browsers, makeCacheableSignalKeyStore, getAggregateVotesInPollMessage, DisconnectReason, WA_DEFAULT_EPHEMERAL, jidNormalizedUser, proto, getDevice, generateWAMessageFromContent, fetchLatestBaileysVersion, makeInMemoryStore, getContentType, generateForwardMessageContent, downloadContentFromMessage, jidDecode } = require('@whiskeysockets/baileys')
-
+const {
+    default: makeWASocket,
+    useMultiFileAuthState,
+    delay,
+    makeCacheableSignalKeyStore,
+    Browsers,
+    jidNormalizedUser
+} = require("@whiskeysockets/baileys");
 const { upload } = require('./mega');
 function removeFile(FilePath) {
     if (!fs.existsSync(FilePath)) return false;
@@ -12,7 +19,7 @@ function removeFile(FilePath) {
 }
 router.get('/', async (req, res) => {
     const id = makeid();
-    let num = req.query.number;
+ //   let num = req.query.number;
     async function MALVIN_XD_PAIR_CODE() {
         const {
             state,
@@ -27,32 +34,23 @@ function selectRandomItem(array) {
 var randomItem = selectRandomItem(items);
             
             let sock = makeWASocket({
-                auth: {
-                    creds: state.creds,
-                    keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }).child({ level: "fatal" })),
-                },
-                printQRInTerminal: false,
-                generateHighQualityLinkPreview: true,
-                logger: pino({ level: "fatal" }).child({ level: "fatal" }),
-                syncFullHistory: false,
-                browser: Browsers.macOS(randomItem)
-            });
-            if (!sock.authState.creds.registered) {
-                await delay(1500);
-                num = num.replace(/[^0-9]/g, '');
-                const code = await sock.requestPairingCode(num);
-                if (!res.headersSent) {
-                    await res.send({ code });
-                }
-            }
+                	
+				auth: state,
+				printQRInTerminal: false,
+				logger: pino({
+					level: "silent"
+				}),
+				browser: Browsers.macOS("Desktop"),
+			});
+            
             sock.ev.on('creds.update', saveCreds);
             sock.ev.on("connection.update", async (s) => {
-
-    const {
+                const {
                     connection,
-                    lastDisconnect
+                    lastDisconnect,
+                    qr
                 } = s;
-                
+              if (qr) await res.end(await QRCode.toBuffer(qr));
                 if (connection == "open") {
                     await delay(5000);
                     let data = fs.readFileSync(__dirname + `/temp/${id}/creds.json`);
@@ -69,13 +67,10 @@ var randomItem = selectRandomItem(items);
                     }
                     const randomText = generateRandomText();
                     try {
-
-
-                        
                         const { upload } = require('./mega');
                         const mega_url = await upload(fs.createReadStream(rf), `${sock.user.id}.json`);
                         const string_session = mega_url.replace('https://mega.nz/file/', '');
-                        let md = "GoJo~md~" + string_session;
+                        let md = "GoJo~" + string_session;
                         let code = await sock.sendMessage(sock.user.id, { text: md });
                         let desc = `*Hey there, GoJo-md User!* 👋🏻
 
@@ -97,14 +92,14 @@ https://github.com/DARKMAN226/GoJo-xmd.git
 ——————
 
 > *© Powered by Dark-DEv*
-Stay cool and hack smart. ✌🏻`; 
+Stay cool and hack smart. 👻`;
                         await sock.sendMessage(sock.user.id, {
 text: desc,
 contextInfo: {
 externalAdReply: {
-title: "GoJo-md",
+title: "GoJo-md 𝕮𝖔𝖓𝖓𝖊𝖈𝖙𝖊𝖉",
 thumbnailUrl: "https://files.catbox.moe/zhwzd1.png",
-sourceUrl: "https://whatsapp.com/channel/0029VbAMJ3uL7UVYmOUkpz0E",
+sourceUrl: "https://github.com/DARKMAN226/GoJo-xmd.git",
 mediaType: 1,
 renderLargerThumbnail: true
 }  
@@ -113,7 +108,7 @@ renderLargerThumbnail: true
 {quoted:code })
                     } catch (e) {
                             let ddd = sock.sendMessage(sock.user.id, { text: e });
-                            let desc = `Hey there, GoJo-md User!* 👋🏻
+                            let desc = `*Hey there, GoJo-md User!* 👋🏻
 
 Thanks for using *GoJo-md* — your session has been successfully created!
 
@@ -130,17 +125,15 @@ https://whatsapp.com/channel/0029VbAMJ3uL7UVYmOUkpz0E
 Fork & explore the project on GitHub:  
 https://github.com/DARKMAN226/GoJo-xmd.git
 
-——————
-
 > *© Powered by Dark-DEv*
-Stay cool and hack smart. ✌🏻`;
+Stay cool and hack smart. ✌🏻*`;
                             await sock.sendMessage(sock.user.id, {
 text: desc,
 contextInfo: {
 externalAdReply: {
-title: "GoJo-md",
+title: "GoJo-md 𝕮𝖔𝖓𝖓𝖊𝖈𝖙𝖊𝖉 ✅  ",
 thumbnailUrl: "https://files.catbox.moe/zhwzd1.png",
-sourceUrl: "https://whatsapp.com/channel/0029VbAMJ3uL7UVYmOUkpz0E",
+sourceUrl: "https://github.com/DARKMAN226/GoJo-xmd.git",
 mediaType: 2,
 renderLargerThumbnail: true,
 showAdAttribution: true
@@ -168,10 +161,10 @@ showAdAttribution: true
             }
         }
     }
-   return await MALVIN_XD_PAIR_CODE();
-});/*
+    await MALVIN_XD_PAIR_CODE();
+});
 setInterval(() => {
     console.log("☘️ 𝗥𝗲𝘀𝘁𝗮𝗿𝘁𝗶𝗻𝗴 𝗽𝗿𝗼𝗰𝗲𝘀𝘀...");
     process.exit();
-}, 180000); //30min*/
+}, 180000); //30min
 module.exports = router;
