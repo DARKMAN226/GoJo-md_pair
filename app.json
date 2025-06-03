@@ -1,0 +1,17 @@
+{
+    "name": "GoJo-md Session Generator",
+    "description": "Web Session Generator",
+    "logo": "https://files.catbox.moe/zhwzd1.png",
+    "repository": "https://github.com/DARKMAN226/GoJo-md_pair.git",
+    "keywords": ["DARKMAN226","Dark-DEv"],
+    "success_url": "/", 
+    "buildpacks": [{ "url": "https://github.com/heroku/heroku-buildpack-nodejs#latest" } ],
+    "env": {      
+      "PORT": {
+        "description": "Port for web app.4000,5000,3000... any!",
+        "value": "5000",
+        "required": false 
+      }
+    }   
+
+}
